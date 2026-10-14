@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>이그니스 학습지 해설</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: lab notebook — one column of experiment sections, sticky chip nav, answer rows + live charts fed by editable measurement tables */
+:root{
+  --bg:#f3f5f6; --surface:#ffffff; --ink:#1b2328; --muted:#5b666d; --line:#d8dee1;
+  --accent:#1f5fa8; --accent-soft:#e3ecf8; --brick:#a5452a;
+  --r:#c23b2b; --g:#2b8a55; --b:#2d68b0;
+  --warn:#7d5300; --warn-bg:#faf1dc;
+  --water:#d9e8f3; --org:#f1efe2; --tube:#7d8a91;
+  --display:"Noto Serif KR","Nanum Myeongjo",Georgia,serif;
+  --body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161a; --surface:#192026; --ink:#e4e9ec; --muted:#98a4ab; --line:#2b353c;
+  --accent:#78a9ea; --accent-soft:#1c2c42; --brick:#e0805f;
+  --r:#ee6b5c; --g:#5cc48b; --b:#6ea4ec;
+  --warn:#e9b95c; --warn-bg:#2a2314;
+  --water:#243747; --org:#35342a; --tube:#8b989f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161a; --surface:#192026; --ink:#e4e9ec; --muted:#98a4ab; --line:#2b353c;
+  --accent:#78a9ea; --accent-soft:#1c2c42; --brick:#e0805f;
+  --r:#ee6b5c; --g:#5cc48b; --b:#6ea4ec;
+  --warn:#e9b95c; --warn-bg:#2a2314;
+  --water:#243747; --org:#35342a; --tube:#8b989f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.7 var(--body);margin:0}
+.wrap{max-width:860px;margin:0 auto;padding-inline:18px;padding-block:28px 64px}
+header h1{font:700 clamp(1.7rem,4.5vw,2.4rem)/1.25 var(--display);margin:4px 0 8px;text-wrap:balance}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.lede{color:var(--muted);max-width:62ch;margin:0}
+.notice{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:13.5px;color:var(--muted)}
+.tag{display:inline-block;font:500 11.5px var(--mono);padding:2px 8px;border-radius:4px;background:var(--warn-bg);color:var(--warn)}
+button{font:500 13px var(--body);color:var(--accent);background:transparent;border:1px solid var(--line);border-radius:6px;padding:5px 12px;cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);margin:22px -18px 0;padding:10px 18px}
+nav .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav a{flex:none;font-size:13px;text-decoration:none;color:var(--ink);padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+nav a span{font-family:var(--mono);color:var(--muted);margin-right:5px}
+section{padding-top:40px;scroll-margin-top:60px}
+section>h2{font:700 1.45rem/1.35 var(--display);margin:0 0 2px;text-wrap:balance}
+.meta{font:12.5px var(--mono);color:var(--muted);margin-bottom:16px}
+h3{font-size:1rem;margin:26px 0 10px;font-weight:700}
+.qa{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);border-top:1px solid var(--line)}
+.qa:last-of-type{border-bottom:1px solid var(--line)}
+.q{padding:10px 14px 10px 0;color:var(--muted);font-weight:500;font-size:14px}
+.a{padding:10px 0;min-width:0}
+.a p{margin:0 0 6px}.a p:last-child{margin:0}
+.fill{background:var(--accent-soft);color:var(--accent);font-weight:700;padding:0 5px;border-radius:3px}
+.note{margin:16px 0;padding:12px 14px;background:var(--warn-bg);border-radius:6px;font-size:14px}
+.note b{color:var(--warn)}
+.note ul{margin:4px 0 0;padding-left:18px}
+.tbl{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:460px}
+th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+th{font-weight:500;color:var(--muted);font-size:12.5px;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:13px}
+input[type=number]{width:74px;font:13px var(--mono);text-align:right;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:4px 6px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;margin:14px 0}
+.panel h4{margin:0 0 4px;font-size:14px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto}
+.grid{stroke:var(--line);stroke-width:1}
+.axis{stroke:var(--muted);stroke-width:1.2}
+.tick{fill:var(--muted);font:11px var(--mono)}
+.axl{fill:var(--muted);font:12px var(--body)}
+.vl{fill:var(--ink);font:11px var(--mono)}
+.k-r{stroke:var(--r);fill:var(--r)}.k-g{stroke:var(--g);fill:var(--g)}.k-b{stroke:var(--b);fill:var(--b)}
+.k-1{stroke:var(--accent);fill:var(--accent)}.k-2{stroke:var(--brick);fill:var(--brick)}
+.bg-r{background:var(--r)}.bg-g{background:var(--g)}.bg-b{background:var(--b)}.bg-1{background:var(--accent)}.bg-2{background:var(--brick)}
+.ln{fill:none;stroke-width:2.2}.fit{fill:none;stroke-width:1.4;stroke-dasharray:5 4}
+.out{font:500 13.5px var(--mono);color:var(--ink)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.two>*{min-width:0}
+.sw{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 2px}
+.sw div{flex:1 1 70px;text-align:center;font:11.5px var(--mono);color:var(--muted)}
+.sw div i{display:block;height:34px;border-radius:5px;border:1px solid var(--line);margin-bottom:4px}
+.calc{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px;margin-top:10px}
+.small{font-size:13px;color:var(--muted)}
+.how{margin:14px 0 0;padding-left:20px;display:grid;gap:4px;font-size:14px;color:var(--muted);max-width:68ch}
+.how b{color:var(--ink);font-weight:500}
+.tube-l{fill:var(--ink);font:12px var(--body)}.tube-s{fill:var(--muted);font:11px var(--body)}
+@media (max-width:560px){.qa{grid-template-columns:1fr}.q{padding-bottom:0}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">2026 · 이그니스 부원용 · 학습지 6종</div>
+  <h1>이그니스 학습지 해설</h1>
+  <p class="lede">올해 동아리에서 진행한 실험 학습지의 빈칸 답과 결과 그래프를 한곳에 모았습니다. 학습지를 채우거나 보고서를 쓸 때 참고하세요.</p>
+  <ol class="how">
+    <li><b>빈칸 답</b>은 파란색으로 표시되어 있습니다. 그대로 베끼기보다 이유를 이해하고 자기 말로 쓰세요.</li>
+    <li><b>측정값 표</b>에는 예시값이 들어 있습니다. 내 조의 기록값으로 바꾸면 그래프와 계산이 바로 바뀝니다. 입력한 값은 내 브라우저에만 저장되고 다른 부원에게는 보이지 않습니다.</li>
+  </ol>
+  <div class="notice"><span class="tag">예시값</span><span>그래프의 숫자는 예상 경향을 보여 주는 예시이며, 실제 실험 결과가 아닙니다.</span><button id="reset" type="button">예시값으로 되돌리기</button></div>
+</header>
+
+<nav aria-label="실험 목록"><div class="chips">
+  <a href="#ben1"><span>04.15</span>베네딕트 사전</a>
+  <a href="#ben2"><span>05.27</span>베네딕트 기초</a>
+  <a href="#sol"><span>06.10</span>극성·용해성</a>
+  <a href="#surf"><span>06.10</span>계면활성제</a>
+  <a href="#alg"><span>—</span>알지네이트 비드</a>
+  <a href="#dcpip"><span>—</span>DCPIP 적정</a>
+</div></nav>
+
+<!-- 1 -->
+<section id="ben1">
+  <h2>베네딕트 프로젝트 (1) 사전 활동지</h2>
+  <div class="meta">2026.04.15 · 식품 속 환원당 분석과 혈당 스파이크</div>
+  <div class="qa"><div class="q">색깔의 의미</div><div class="a">
+    <p>(<b class="fill">파란색</b>) → (<b class="fill">초록색</b>) → (<b class="fill">노란색·주황색</b>) → (<b class="fill">적갈색</b>)</p>
+    <p class="small">환원당이 적으면 Cu₂O가 조금만 생겨 남은 Cu²⁺의 파란색과 섞여 초록으로 보이고, 많아질수록 주황·적갈색 침전이 우세해집니다.</p>
+  </div></div>
+  <div class="qa"><div class="q">환원당 정의 보충</div><div class="a">
+    <p>과당은 알데하이드기가 아닌 케톤기를 가지지만, 베네딕트 시약 같은 염기성 조건에서 알데하이드 형태로 이성질화되어 환원당으로 작용합니다.</p>
+  </div></div>
+  <div class="qa"><div class="q">채소 조리법과 당 분해</div><div class="a">
+    <p>전분 자체는 비환원당이라 베네딕트 반응이 거의 없습니다. 가열하면 전분이 호화되어 아밀레이스가 작용하기 쉬워지고, 분해 산물인 맥아당·포도당(환원당)이 늘어납니다. 고구마를 오래 구우면 단맛이 강해지는 것이 같은 원리입니다.</p>
+  </div></div>
+</section>
+
+<!-- 2 -->
+<section id="ben2">
+  <h2>베네딕트 반응 기초 실험</h2>
+  <div class="meta">2026.05.27 · 포도당 0–1% 표준 곡선</div>
+
+  <h3>2. 실험 결과 기록</h3>
+  <div class="tbl"><table id="t-ben">
+    <thead><tr><th>포도당 농도</th><th>관찰 색상 (예상)</th><th class="num">R</th><th class="num">G</th><th class="num">B</th><th>측정 색</th></tr></thead>
+    <tbody></tbody></table></div>
+
+  <h3>3. 실험 결과 분석</h3>
+  <div class="qa"><div class="q">(1) 농도와 색 변화</div><div class="a">
+    <p>R값: 농도 증가에 따라 <b class="fill">증가</b></p>
+    <p>G값: 초록·노랑 단계에서 최대가 되었다가 적갈색 단계에서 감소 → 한 값에 두 농도가 대응할 수 있어 표준 곡선에 부적합</p>
+    <p>B값: 농도 증가에 따라 <b class="fill">감소</b></p>
+    <p>⇒ 포도당 농도가 (<b class="fill">높을</b>)수록 환원된 Cu²⁺ 이온이 많아짐 → 색이 파랑에서 적갈색으로 변화</p>
+  </div></div>
+  <div class="qa"><div class="q">(2) 표준 곡선</div><div class="a">
+    <p>R값을 농도에 대해 선형 회귀한 식이 아래 그래프의 점선입니다. 이후 실험 2에서 음료의 R값을 넣으면 포도당 환산 농도를 구할 수 있습니다.</p>
+  </div></div>
+
+  <div class="panel">
+    <h4>포도당 농도에 따른 RGB값</h4>
+    <div class="legend"><span><i class="bg-r"></i>R</span><span><i class="bg-g"></i>G</span><span><i class="bg-b"></i>B</span><span>점선: R 표준 곡선</span></div>
+    <div id="c-ben"></div>
+    <p class="out" id="ben-eq"></p>
+    <div class="calc"><label for="benR">음료 R값</label><input type="number" id="benR" value="150"><span class="out" id="ben-inv"></span></div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="sol">
+  <h2>분자의 극성에 따른 용해성</h2>
+  <div class="meta">2026.06.10 · 실험 1단계</div>
+  <div class="panel">
+    <svg viewBox="0 0 560 240" role="img" aria-label="다섯 가지 조합의 층 분리와 색을 나타낸 시험관 그림">
+      <defs>
+        <clipPath id="tc0"><rect x="30" y="20" width="56" height="155" rx="24"/></clipPath>
+        <clipPath id="tc1"><rect x="140" y="20" width="56" height="155" rx="24"/></clipPath>
+        <clipPath id="tc2"><rect x="250" y="20" width="56" height="155" rx="24"/></clipPath>
+        <clipPath id="tc3"><rect x="360" y="20" width="56" height="155" rx="24"/></clipPath>
+        <clipPath id="tc4"><rect x="470" y="20" width="56" height="155" rx="24"/></clipPath>
+      </defs>
+      <g clip-path="url(#tc0)"><rect x="30" y="55" width="56" height="58" style="fill:var(--org)"/><rect x="30" y="113" width="56" height="62" style="fill:var(--water)"/></g>
+      <g clip-path="url(#tc1)"><rect x="140" y="55" width="56" height="120" style="fill:#3f86d1"/></g>
+      <g clip-path="url(#tc2)"><rect x="250" y="55" width="56" height="120" style="fill:#e9c98a"/><circle cx="268" cy="166" r="4" style="fill:#3b2a44"/><circle cx="281" cy="168" r="3.5" style="fill:#3b2a44"/><circle cx="292" cy="165" r="4" style="fill:#3b2a44"/></g>
+      <g clip-path="url(#tc3)"><rect x="360" y="55" width="56" height="120" style="fill:#7d3fa0"/></g>
+      <g clip-path="url(#tc4)"><rect x="470" y="55" width="56" height="40" style="fill:var(--org)"/><rect x="470" y="95" width="56" height="40" style="fill:var(--water)"/><rect x="470" y="135" width="56" height="40" style="fill:var(--org);opacity:.7"/></g>
+      <g style="fill:none;stroke:var(--tube);stroke-width:1.6">
+        <rect x="30" y="20" width="56" height="155" rx="24"/><rect x="140" y="20" width="56" height="155" rx="24"/><rect x="250" y="20" width="56" height="155" rx="24"/><rect x="360" y="20" width="56" height="155" rx="24"/><rect x="470" y="20" width="56" height="155" rx="24"/>
+      </g>
+      <g style="stroke:var(--tube);stroke-width:1;stroke-dasharray:3 3"><line x1="30" x2="86" y1="113" y2="113"/><line x1="470" x2="526" y1="95" y2="95"/><line x1="470" x2="526" y1="135" y2="135"/></g>
+      <text class="tube-s" x="92" y="86">헵테인</text><text class="tube-s" x="92" y="146">물</text>
+      <g text-anchor="middle">
+        <text class="tube-l" x="58" y="198">물+헵테인</text><text class="tube-s" x="58" y="215">2층, 무색</text>
+        <text class="tube-l" x="168" y="198">물+CuSO₄</text><text class="tube-s" x="168" y="215">용해, 파란색</text>
+        <text class="tube-l" x="278" y="198">물+I₂</text><text class="tube-s" x="278" y="215">거의 안 녹음</text>
+        <text class="tube-l" x="388" y="198">CH₂Cl₂+I₂</text><text class="tube-s" x="388" y="215">용해, 보라색</text>
+        <text class="tube-l" x="498" y="198">세 용매</text><text class="tube-s" x="498" y="215">흔들기 전 3층</text>
+      </g>
+    </svg>
+  </div>
+  <h3>2. 실험 결과 기록</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>용액</th><th>층 분리 / 용해</th><th>층 수</th><th>색 변화</th></tr></thead>
+    <tbody>
+      <tr><td>물 + n-헵테인</td><td>층 분리</td><td>2</td><td>변화 없음 (위: 헵테인, 아래: 물)</td></tr>
+      <tr><td>물 + 황산구리(II)</td><td>용해</td><td>1</td><td>파란색 (수화된 Cu²⁺)</td></tr>
+      <tr><td>물 + 아이오딘</td><td>거의 녹지 않음, 고체 남음</td><td>1 (+고체)</td><td>아주 조금 녹아 연한 노란색~갈색</td></tr>
+      <tr><td>CH₂Cl₂ + 아이오딘</td><td>용해</td><td>1</td><td>보라색</td></tr>
+      <tr><td>물 + n-헵테인 + CH₂Cl₂</td><td>헵테인·CH₂Cl₂는 서로 섞이고 물과는 분리</td><td>흔들기 전 3, 흔든 후 2</td><td>아이오딘이 있으면 유기층만 보라색, 황산구리가 있으면 물층만 파란색</td></tr>
+    </tbody></table></div>
+  <h3>3. 실험 결과 분석</h3>
+  <div class="qa"><div class="q">(1) 물과 n-헵테인</div><div class="a"><p>물은 (<b class="fill">극성</b>) 분자, n-헵테인은 (<b class="fill">비극성</b>) 분자</p></div></div>
+  <div class="qa"><div class="q">(2) 황산구리·아이오딘</div><div class="a"><p>학습지 서술이 맞습니다. 덧붙이면 아이오딘이 비극성 용매에서 보라색, 물에서 갈색으로 보이는 차이는 용매와의 상호작용 세기 차이에서 옵니다.</p></div></div>
+</section>
+
+<!-- 4 -->
+<section id="surf">
+  <h2>계면활성제 농도와 유화, 인지질 이중층</h2>
+  <div class="meta">2026.06.10 · 실험 2·3단계</div>
+  <h3>2. 실험 결과 기록 (예상)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>조건</th><th>흔든 직후</th><th>1분 후</th><th>5분 후</th><th>다시 분리되는 데 걸린 시간</th></tr></thead>
+    <tbody>
+      <tr><td><b>대조군</b> (세제 없음)</td><td>뿌옇게 섞이나 기름방울이 큼, 거품 거의 없음</td><td>두 층으로 거의 분리</td><td>완전히 분리</td><td>가장 짧음</td></tr>
+      <tr><td><b>실험군 A</b> (2방울)</td><td>뿌옇게 섞임, 거품 약간</td><td>분리 시작</td><td>일부만 분리</td><td>중간</td></tr>
+      <tr><td><b>실험군 B</b> (10방울)</td><td>우윳빛으로 고르게 섞임, 거품 많음</td><td>거의 그대로</td><td>여전히 분리 거의 없음</td><td>가장 김</td></tr>
+    </tbody></table></div>
+  <div class="panel">
+    <h4>층 분리 시간 (초)</h4>
+    <div class="legend"><span><i class="bg-1"></i>분리 시작</span><span><i class="bg-2"></i>완전히 두 층</span></div>
+    <div id="c-emu"></div>
+    <div class="tbl"><table id="t-emu"><thead><tr><th>조건</th><th class="num">분리 시작(초)</th><th class="num">완전 분리(초)</th></tr></thead><tbody></tbody></table></div>
+  </div>
+  <h3>실험 3단계: 세제 분자와 인지질 분자 비교</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>비교 항목</th><th>세제 분자 (계면활성제)</th><th>인지질 분자</th></tr></thead>
+    <tbody>
+      <tr><td>머리 부분</td><td>(<b class="fill">친</b>)수성 (극성), 1개</td><td>인산기 머리, (<b class="fill">친</b>)수성 (극성), 1개</td></tr>
+      <tr><td>꼬리 부분</td><td>(<b class="fill">소</b>)수성 (비극성), 1개</td><td>지방산 꼬리, (<b class="fill">소</b>)수성 (비극성), 2개</td></tr>
+      <tr><td>물에 대한 성질</td><td><b class="fill">머리</b>가 친화</td><td><b class="fill">머리</b>가 친화</td></tr>
+      <tr><td>기름에 대한 성질</td><td><b class="fill">꼬리</b>가 친화</td><td><b class="fill">꼬리</b>가 친화</td></tr>
+    </tbody></table></div>
+</section>
+
+<!-- 5 -->
+<section id="alg">
+  <h2>알지네이트 비드</h2>
+  <div class="meta">① 농도별 물성 · ② pH별 팽윤성</div>
+  <h3>① 제작과 물성 비교</h3>
+  <div class="qa"><div class="q">나의 가설</div><div class="a"><p>알지네이트 농도가 높을수록 Ca²⁺와 가교할 수 있는 COO⁻ 수가 많아져 그물 구조가 촘촘해지므로, 3% 비드가 가장 단단하고 구형에 가까울 것이다. 또 점도가 높아 방울이 커지므로 지름도 3%에서 가장 클 것이다.</p></div></div>
+  <div class="qa"><div class="q">예상 결과</div><div class="a"><p>1%: 점도가 낮아 떨어질 때 납작하거나 꼬리 달린 모양, 쉽게 눌림 · 2%: 대체로 구형 · 3%: 가장 크고 단단, 주사기에서 밀어내기 어려움</p></div></div>
+  <div class="panel">
+    <div class="two">
+      <div><h4>비드 지름 (mm)</h4><div id="c-alg1d"></div></div>
+      <div><h4>경도 점수 (1 = 쉽게 눌림, 5 = 가장 단단)</h4><div id="c-alg1h"></div></div>
+    </div>
+    <div class="tbl"><table id="t-alg1"><thead><tr><th>농도</th><th class="num">평균 지름(mm)</th><th class="num">경도 점수</th></tr></thead><tbody></tbody></table></div>
+  </div>
+
+  <h3>② pH별 팽윤성</h3>
+  <div class="qa"><div class="q">나의 가설</div><div class="a"><p>pH 2에서는 COO⁻가 COOH로 바뀌어 사슬 사이 반발이 사라지므로 비드가 팽윤하지 않거나 약간 수축하고, pH 7에서는 음전하 반발과 물 유입으로 팽윤율이 시간에 따라 커질 것이다. 색소 방출도 pH 7에서 더 빠를 것이다.</p></div></div>
+  <div class="panel">
+    <h4>시간에 따른 팽윤율 (%)</h4>
+    <div class="legend"><span><i class="bg-2"></i>pH 2</span><span><i class="bg-1"></i>pH 7</span></div>
+    <div id="c-alg2"></div>
+    <div class="tbl"><table id="t-alg2"><thead><tr><th>pH</th><th class="num">초기(g)</th><th class="num">1h</th><th class="num">2h</th><th class="num">4h</th><th class="num">8h</th><th class="num">8h 팽윤율</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section id="dcpip">
+  <h2>DCPIP 적정법 항산화 실험</h2>
+  <div class="meta">영지버섯 vs 오렌지</div>
+  <h3>I. 실험 전 개념 확인</h3>
+  <div class="qa"><div class="q">Q1. 항산화 물질</div><div class="a"><p>자신이 먼저 산화되어(전자를 내주어) 다른 물질의 산화를 막거나 늦추는 물질. 활성산소·자유 라디칼에 전자를 주어 안정화하는 환원제로 작용합니다. 예: 비타민 C, 폴리페놀, 플라보노이드</p></div></div>
+  <div class="qa"><div class="q">Q2. DCPIP 색</div><div class="a"><p>산화형: <b class="fill">파란색</b> · 환원형: <b class="fill">무색</b></p><p class="small">산성 용액에서는 산화형이 분홍색을 띠어, 종말점 직전에 분홍빛이 보일 수 있습니다.</p></div></div>
+  <div class="qa"><div class="q">Q3. 종말점</div><div class="a"><p>플라스크 속 DCPIP 5 mL가 모두 환원되어 파란색이 완전히 사라지고, 흔들어도 다시 돌아오지 않는 순간</p></div></div>
+  <div class="qa"><div class="q">Q4. 부피와 항산화력</div><div class="a"><p>DCPIP 양이 5 mL로 고정되어 있어, 이를 모두 환원하는 데 필요한 환원성 물질의 총량은 매번 같습니다. 적은 부피로 그 양을 채웠다면 단위 부피당 환원성 물질이 많다는 뜻이므로 항산화력이 강합니다.</p></div></div>
+  <div class="qa"><div class="q">Q5. 비타민 C 표준</div><div class="a"><p>농도를 아는 아스코르브산으로 DCPIP 5 mL를 환원하는 데 드는 부피를 먼저 구해, 시료의 결과를 "비타민 C 몇 mg에 해당하는가"로 환산하기 위해서입니다. DCPIP 용액 농도 오차나 분해도 함께 보정됩니다.</p></div></div>
+
+  <h3>II. 실험 설계 확인</h3>
+  <div class="qa"><div class="q">Q6. 추출 방법 차이</div><div class="a"><p>영지버섯: 주요 항산화 성분인 다당류(β-글루칸)와 페놀류가 물에 잘 녹고 건조 조직이 단단해, 끓는 물로 세포벽을 깨서 용출합니다.</p><p>오렌지: 비타민 C는 열에 쉽게 분해되므로 가열하지 않고, 껍질의 플라보노이드(헤스페리딘 등)가 잘 녹는 70% 에탄올에 저온 침지합니다.</p></div></div>
+  <div class="qa"><div class="q">Q7. 변인</div><div class="a">
+    <p>조작 변인: 시료의 종류 (비타민 C 표준, 영지버섯 추출물, 오렌지 추출물)</p>
+    <p>통제 변인: DCPIP 농도·부피(0.05%, 5 mL), 희석 배율, 온도, 적정 속도, 종말점 판정 기준, 같은 뷰렛</p>
+    <p>종속 변인: 종말점까지 들어간 추출물 부피(mL) → 항산화 능력</p></div></div>
+  <div class="qa"><div class="q">Q8. 3회 반복</div><div class="a"><p>방울 크기, 종말점 판단 등에서 생기는 우연 오차를 평균으로 줄이고, 튀는 값을 찾아내 결과의 재현성과 신뢰도를 확인하기 위해서입니다.</p></div></div>
+
+  <h3>III. 실험 결과 기록 · Q9 계산</h3>
+  <div class="panel">
+    <div class="tbl"><table id="t-dc"><thead><tr><th>시료</th><th class="num">1회</th><th class="num">2회</th><th class="num">3회</th><th class="num">평균(mL)</th><th class="num">표준편차</th></tr></thead><tbody></tbody></table></div>
+    <div class="calc"><label for="dil">추출물 희석 배율</label><input type="number" id="dil" min="1" step="1" value="1"><span class="small">예시값은 희석하지 않은 추출물을 가정</span></div>
+    <h4 style="margin-top:14px">평균 적정 부피 (mL, 오차 막대 = 표준편차)</h4>
+    <div id="c-dc"></div>
+    <div class="tbl"><table id="t-dcr"><thead><tr><th>시료</th><th class="num">학습지 식 (×0.1)</th><th class="num">mg 비타민C 당량/mL</th><th class="num">원 추출물 기준</th><th class="num">시료 1 g당 (mg)</th></tr></thead><tbody></tbody></table></div>
+    <p class="small">단위 보정: 0.1% 비타민 C 용액은 1 mg/mL이므로, mg/mL 단위로 쓰려면 (V_vit ÷ V_시료) × <b>1</b>이 맞습니다. 학습지 식의 ×0.1은 % 단위 결과입니다.</p>
+  </div>
+
+  <h3>IV. 결과 해석 및 고찰</h3>
+  <div class="qa"><div class="q">Q10. 더 강한 쪽</div><div class="a"><p id="q10"></p><p class="small">예상: DCPIP는 비타민 C처럼 빨리 반응하는 환원제를 주로 검출하고, 영지버섯의 다당류·트리테르페노이드는 DCPIP와 느리게 반응합니다. 그래서 이 방법에서는 오렌지가 더 강하게 나올 가능성이 높습니다.</p></div></div>
+  <div class="qa"><div class="q">Q11. 오차 요인</div><div class="a">
+    <p>① 종말점 판정: 영지버섯 추출물의 갈색, 오렌지 추출물의 노란색이 남아 "완전한 무색"을 판단하기 어렵고, 산성에서 생기는 분홍빛과 혼동될 수 있음</p>
+    <p>② 비타민 C의 산화: 표준 용액·추출물이 공기, 빛, 시간(최대 48시간 보관)에 의해 산화되어 환원력이 줄어듦. DCPIP 용액도 시간이 지나면 분해됨</p>
+    <p>③ 반응 속도 차이: 영지버섯 성분은 DCPIP와 천천히 반응해, 방울을 빨리 넣으면 종말점을 지나쳐 부피가 크게 측정됨</p>
+    <p class="small">그 외: 두 시료의 추출 용매·농도 차이, 뷰렛 눈금 읽기와 방울 크기 차이</p></div></div>
+  <div class="qa"><div class="q">Q12. DPPH assay</div><div class="a">
+    <p>보라색 DPPH 라디칼이 항산화 물질에 전자(수소)를 받아 노란색으로 바뀌는 정도를 봅니다. 적정 대신 정해진 양을 섞고 어두운 곳에서 약 30분 반응시킨 뒤 517 nm 흡광도를 측정해 라디칼 소거율(%) = (A₀ − A) / A₀ × 100을 구합니다.</p>
+    <p>비타민 C뿐 아니라 페놀·플라보노이드처럼 느리게 반응하는 성분까지 반영하고, 알코올 용매라 지용성 성분도 측정되므로 영지버섯의 상대적 항산화력이 DCPIP보다 높게 나올 수 있습니다. 분광광도계가 없으면 베네딕트 실험처럼 스마트폰 RGB로 색 변화를 정량할 수 있습니다.</p></div></div>
+
+  <h3>V. 심화 탐구</h3>
+  <div class="qa"><div class="q">Q13. 가열 시간</div><div class="a">
+    <p>오렌지: 3분 &gt; 10분 &gt; 30분 순으로 감소할 것이다. 비타민 C는 열과 산소에 의해 데하이드로아스코르브산으로 산화되고 더 분해되어 DCPIP를 환원하지 못한다.</p>
+    <p>영지버섯: 3분보다 10분에서 증가하고, 30분에서는 증가 폭이 줄거나 비슷할 것이다. 열수 추출 시간이 길수록 다당류·페놀 성분의 용출이 늘지만, 열에 비교적 안정해 분해 손실이 작기 때문이다.</p>
+    <p class="small">베네딕트 프로젝트의 "조리법에 따른 성분 변화"와 같은 질문 구조라, 두 실험을 한 보고서에서 연결할 수 있습니다.</p></div></div>
+</section>
+</div>
+
+<script>
+const DEF={
+  ben:{conc:[0,0.25,0.5,1],rgb:[[62,128,196],[118,152,104],[178,150,62],[206,96,48]],name:['파란색','초록~황록','노랑~주황','적갈색 침전']},
+  emu:{g:['대조군','실험군 A','실험군 B'],start:[10,60,300],full:[90,420,1200]},
+  alg1:{c:['1%','2%','3%'],d:[2.8,3.5,4.2],h:[1,3,5]},
+  alg2:{t:[0,1,2,4,8],w:[[0.50,0.49,0.48,0.47,0.46],[0.50,0.57,0.62,0.68,0.73]]},
+  dc:{n:['비타민 C (대조군)','영지버섯 추출물','오렌지 추출물'],v:[[1.5,1.6,1.5],[31.5,33.0,32.1],[14.2,15.0,14.6]],gpm:[null,20,5]}
+};
+const KEY='ignis-members-v1';
+let S=JSON.parse(JSON.stringify(DEF));
+try{const s=localStorage.getItem(KEY);if(s){const o=JSON.parse(s);if(o&&o.ben&&o.dc)S=o;}}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const get=p=>p.split('.').reduce((o,k)=>o[k],S);
+const set=(p,v)=>{const k=p.split('.');const last=k.pop();k.reduce((o,x)=>o[x],S)[last]=v;};
+const inp=p=>`<input type="number" step="any" inputmode="decimal" id="i-${p.replace(/\./g,'-')}" data-p="${p}" value="${get(p)}" aria-label="${p}">`;
+const f=(v,d=2)=>Number.isFinite(v)?v.toFixed(d):'—';
+const mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
+const sd=a=>{const m=mean(a);return Math.sqrt(a.reduce((s,x)=>s+(x-m)**2,0)/(a.length-1));};
+function niceMax(v){if(!(v>0))return 1;const p=10**Math.floor(Math.log10(v));const n=v/p;return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p;}
+function ticks(a,b,n=5){const s=(b-a)/n;return Array.from({length:n+1},(_,i)=>+(a+s*i).toFixed(6));}
+function linreg(x,y){const mx=mean(x),my=mean(y);let sxy=0,sxx=0,syy=0;x.forEach((v,i)=>{sxy+=(v-mx)*(y[i]-my);sxx+=(v-mx)**2;syy+=(y[i]-my)**2});const a=sxy/sxx;return{a,b:my-a*mx,r2:sxy*sxy/(sxx*syy)};}
+
+function frame(o,body){
+  const W=o.w||520,H=o.h||270,L=50,R=16,T=14,B=44;
+  const sx=v=>L+(v-o.x0)/(o.x1-o.x0)*(W-L-R), sy=v=>H-B-(v-o.y0)/(o.y1-o.y0)*(H-T-B);
+  let g='';
+  o.yt.forEach(v=>{g+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${sy(v)}" y2="${sy(v)}"/><text class="tick" x="${L-7}" y="${sy(v)+4}" text-anchor="end">${+v.toFixed(3)}</text>`});
+  (o.xt||[]).forEach(t=>{g+=`<text class="tick" x="${sx(t.v)}" y="${H-B+17}" text-anchor="middle">${t.l}</text>`});
+  g+=`<line class="axis" x1="${L}" x2="${W-R}" y1="${sy(o.y0)}" y2="${sy(o.y0)}"/><line class="axis" x1="${L}" x2="${L}" y1="${T}" y2="${H-B}"/>`;
+  if(o.xl)g+=`<text class="axl" x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle">${o.xl}</text>`;
+  if(o.yl)g+=`<text class="axl" transform="translate(13 ${(T+H-B)/2}) rotate(-90)" text-anchor="middle">${o.yl}</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.aria||''}">${g}${body(sx,sy)}</svg>`;
+}
+function bars(cats,series,o){
+  const all=series.flatMap(s=>s.v.map((v,i)=>v+((s.e&&s.e[i])||0)));
+  const y1=o.y1||niceMax(Math.max(...all.filter(Number.isFinite),0)*1.08);
+  return frame({x0:0,x1:cats.length,y0:0,y1,yt:ticks(0,y1),xt:cats.map((c,i)=>({v:i+.5,l:c})),yl:o.yl,aria:o.aria,w:o.w,h:o.h},(sx,sy)=>{
+    let s='';const n=series.length,bw=Math.min(46,(sx(1)-sx(0))*0.62/n);
+    cats.forEach((c,i)=>series.forEach((se,j)=>{
+      const v=se.v[i];if(!Number.isFinite(v))return;
+      const x=sx(i+.5)-n*bw/2+j*bw+2, y=sy(Math.max(v,0));
+      s+=`<rect class="${se.k}" x="${x}" y="${y}" width="${bw-4}" height="${Math.max(sy(0)-y,0)}" rx="2" style="stroke:none"/>`;
+      if(se.e&&Number.isFinite(se.e[i])){const cx=x+(bw-4)/2,y1=sy(v+se.e[i]),y2=sy(Math.max(v-se.e[i],0));s+=`<g style="stroke:var(--ink);stroke-width:1.2"><line x1="${cx}" x2="${cx}" y1="${y1}" y2="${y2}"/><line x1="${cx-5}" x2="${cx+5}" y1="${y1}" y2="${y1}"/><line x1="${cx-5}" x2="${cx+5}" y1="${y2}" y2="${y2}"/></g>`;}
+      s+=`<text class="vl" x="${x+(bw-4)/2}" y="${(se.e?sy(v+se.e[i]):y)-5}" text-anchor="middle">${+v.toFixed(2)}</text>`;
+    }));return s;});
+}
+
+function buildTables(){
+  document.querySelector('#t-ben tbody').innerHTML=S.ben.conc.map((c,i)=>`<tr><td>${c}%</td><td>${S.ben.name[i]}</td>${[0,1,2].map(j=>`<td class="num">${inp(`ben.rgb.${i}.${j}`)}</td>`).join('')}<td><span id="sw${i}" style="display:inline-block;width:38px;height:20px;border-radius:4px;border:1px solid var(--line)"></span></td></tr>`).join('');
+  document.querySelector('#t-emu tbody').innerHTML=S.emu.g.map((g,i)=>`<tr><td>${g}</td><td class="num">${inp(`emu.start.${i}`)}</td><td class="num">${inp(`emu.full.${i}`)}</td></tr>`).join('');
+  document.querySelector('#t-alg1 tbody').innerHTML=S.alg1.c.map((c,i)=>`<tr><td>${c}</td><td class="num">${inp(`alg1.d.${i}`)}</td><td class="num">${inp(`alg1.h.${i}`)}</td></tr>`).join('');
+  document.querySelector('#t-alg2 tbody').innerHTML=['2','7'].map((p,r)=>`<tr><td>${p}</td>${S.alg2.t.map((t,i)=>`<td class="num">${inp(`alg2.w.${r}.${i}`)}</td>`).join('')}<td class="num" id="sw8-${r}"></td></tr>`).join('');
+  document.querySelector('#t-dc tbody').innerHTML=S.dc.n.map((n,r)=>`<tr><td>${n}</td>${[0,1,2].map(i=>`<td class="num">${inp(`dc.v.${r}.${i}`)}</td>`).join('')}<td class="num" id="dcm${r}"></td><td class="num" id="dcs${r}"></td></tr>`).join('');
+}
+
+function render(){
+  // Benedict
+  const c=S.ben.conc,rgb=S.ben.rgb,ch=['r','g','b'];
+  rgb.forEach((v,i)=>{const e=document.getElementById('sw'+i);if(e)e.style.background=`rgb(${v.map(x=>Math.max(0,Math.min(255,x||0))).join(',')})`;});
+  const R=rgb.map(v=>v[0]),fit=linreg(c,R);
+  document.getElementById('c-ben').innerHTML=frame({x0:0,x1:1,y0:0,y1:255,yt:[0,50,100,150,200,250],xt:[0,.25,.5,.75,1].map(v=>({v,l:v+'%'})),xl:'포도당 농도 (%)',yl:'값 (0–255)',aria:'포도당 농도에 따른 R, G, B 값'},(sx,sy)=>{
+    let s=`<line class="fit k-r" x1="${sx(0)}" y1="${sy(fit.b)}" x2="${sx(1)}" y2="${sy(fit.a+fit.b)}"/>`;
+    ch.forEach((k,j)=>{s+=`<polyline class="ln k-${k}" style="fill:none" points="${c.map((x,i)=>sx(x)+','+sy(rgb[i][j])).join(' ')}"/>`;c.forEach((x,i)=>s+=`<circle class="k-${k}" cx="${sx(x)}" cy="${sy(rgb[i][j])}" r="4"/>`)});
+    return s;});
+  document.getElementById('ben-eq').textContent=`표준 곡선: R = ${f(fit.a,1)} × 농도(%) + ${f(fit.b,1)}   (R² = ${f(fit.r2,3)})`;
+  const rv=parseFloat(document.getElementById('benR').value),x=(rv-fit.b)/fit.a;
+  document.getElementById('ben-inv').textContent=Number.isFinite(x)?`→ 포도당 환산 ${f(x,3)}%${x<0||x>1?' (표준 곡선 범위 밖: 희석 후 재측정)':''}`:'';
+  // emulsion
+  document.getElementById('c-emu').innerHTML=bars(S.emu.g,[{v:S.emu.start,k:'k-1'},{v:S.emu.full,k:'k-2'}],{yl:'시간 (초)',aria:'조건별 층 분리 시간'});
+  // alginate 1
+  document.getElementById('c-alg1d').innerHTML=bars(S.alg1.c,[{v:S.alg1.d,k:'k-1'}],{yl:'지름 (mm)',w:340,h:240,aria:'농도별 비드 지름'});
+  document.getElementById('c-alg1h').innerHTML=bars(S.alg1.c,[{v:S.alg1.h,k:'k-2'}],{yl:'경도 점수',y1:5,w:340,h:240,aria:'농도별 경도 점수'});
+  // alginate 2
+  const sw=S.alg2.w.map(r=>r.map(w=>(w-r[0])/r[0]*100));
+  sw.forEach((r,i)=>document.getElementById('sw8-'+i).textContent=f(r[r.length-1],1)+'%');
+  const fl=sw.flat().filter(Number.isFinite),lo=Math.min(0,...fl),hi=Math.max(...fl,1);
+  const y0=lo<0?-niceMax(-lo):0,y1=niceMax(hi*1.1),t=S.alg2.t;
+  document.getElementById('c-alg2').innerHTML=frame({x0:0,x1:8,y0,y1,yt:ticks(y0,y1,y0<0?6:5),xt:t.map(v=>({v,l:v+'h'})),xl:'침지 시간',yl:'팽윤율 (%)',aria:'pH별 시간에 따른 팽윤율'},(sx,sy)=>{
+    let s='';[['k-2',0],['k-1',1]].forEach(([k,r])=>{s+=`<polyline class="ln ${k}" style="fill:none" points="${t.map((x,i)=>sx(x)+','+sy(sw[r][i])).join(' ')}"/>`;t.forEach((x,i)=>s+=`<circle class="${k}" cx="${sx(x)}" cy="${sy(sw[r][i])}" r="4"/>`);s+=`<text class="vl" x="${sx(8)-4}" y="${sy(sw[r][4])-8}" text-anchor="end">${f(sw[r][4],1)}%</text>`});return s;});
+  // DCPIP
+  const m=S.dc.v.map(mean),d=S.dc.v.map(sd);
+  m.forEach((v,i)=>{document.getElementById('dcm'+i).textContent=f(v,2);document.getElementById('dcs'+i).textContent=f(d[i],2);});
+  document.getElementById('c-dc').innerHTML=bars(['비타민 C','영지버섯','오렌지'],[{v:m,e:d,k:'k-1'}],{yl:'적정 부피 (mL)',aria:'시료별 평균 적정 부피'});
+  const dil=Math.max(1,parseFloat(document.getElementById('dil').value)||1);
+  const cap=m.map(v=>m[0]/v*1);
+  document.querySelector('#t-dcr tbody').innerHTML=[1,2].map(i=>`<tr><td>${S.dc.n[i]}</td><td class="num">${f(m[0]/m[i]*0.1,4)}</td><td class="num">${f(cap[i],3)}</td><td class="num">${f(cap[i]*dil,3)}</td><td class="num">${f(cap[i]*dil*S.dc.gpm[i],2)}</td></tr>`).join('');
+  const gs=cap[1]*S.dc.gpm[1],os=cap[2]*S.dc.gpm[2];
+  document.getElementById('q10').innerHTML=`현재 값 기준: 오렌지 평균 부피 ${f(m[2],2)} mL, 영지버섯 ${f(m[1],2)} mL로 <b class="fill">${m[2]<m[1]?'오렌지':'영지버섯'}</b>의 항산화력이 더 강합니다. 같은 DCPIP 5 mL를 더 적은 부피로 탈색했기 때문입니다. 시료 1 g당으로 환산하면 영지버섯 ${f(gs,2)} mg, 오렌지 ${f(os,2)} mg 비타민C 당량으로 <b class="fill">${os>gs?'오렌지':'영지버섯'}</b>가 더 높습니다.`;
+  save();
+}
+document.addEventListener('input',e=>{const p=e.target.dataset&&e.target.dataset.p;if(p){const v=parseFloat(e.target.value);set(p,Number.isFinite(v)?v:NaN);}if(p||e.target.id==='benR'||e.target.id==='dil')render();});
+document.getElementById('reset').addEventListener('click',()=>{S=JSON.parse(JSON.stringify(DEF));buildTables();render();});
+buildTables();render();
+</script>
+
+</html>
